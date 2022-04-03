@@ -11,7 +11,7 @@ Window {
     Rectangle{
         id: scene
         anchors.fill: parent
-        state: "leftState"
+        state: "InitialState"
 
         Rectangle {
             id: leftRect
@@ -24,14 +24,26 @@ Window {
             border.width: 3
             radius: 5
             //
+            Text {
+                id: name
+                anchors.centerIn: parent
+                text: "move"
+            }
+
             MouseArea {
                 anchors.fill: parent
-                onClicked: scene.state = "leftState"
+                onClicked: {
+                    if (ball.x >= rightRect.x - 25) scene.state = "InitialState"
+                    else {
+                        ball.x += 30
+                        scene.state = "OtherState"
+                    }
+                }
             }
         }
         Rectangle {
             id: rightRect
-            x: 300
+            x: 400
             y: 200
             color: "lightgrey"
             width: 100
@@ -40,9 +52,15 @@ Window {
             border.width: 3
             radius: 5
             //
+            Text {
+                id: name_1
+                anchors.centerIn: parent
+                text: "return"
+            }
+
             MouseArea {
                 anchors.fill: parent
-                onClicked: scene.state = "rightState"
+                onClicked: scene.state = "InitialState"
             }
         }
         Rectangle {
@@ -55,20 +73,21 @@ Window {
             radius: width / 2
         }
 
+
+
         states: [
             State {
-                name: "rightState"
-                PropertyChanges {
-                    target: ball
-                    x: rightRect.x + 5
-
-                }
-            } ,
-            State {
-                name: "leftState"
+                name: "InitialState"
                 PropertyChanges {
                     target: ball
                     x: leftRect.x + 5
+                }
+            } ,
+            State {
+                name: "OtherState"
+                PropertyChanges {
+                    target: ball
+                    x: ball.x
                 }
             }
 
@@ -76,23 +95,13 @@ Window {
 
         transitions: [
             Transition {
-                from: "leftState"
-                to: "rightState"
+                from: "OtherState"
+                to: "InitialState"
 
                 NumberAnimation {
-                    properties: "x, y"
-                    duration: 500
-                    easing.type: Easing.OutBounce
-                }
-            },
-            Transition {
-                from: "rightState"
-                to: "leftState"
-
-                NumberAnimation {
-                    properties: "x, y"
+                    properties: "x,y"
                     duration: 1000
-                    easing.type: Easing.InOutExpo
+                    easing.type: Easing.OutBounce
                 }
             }
         ]
